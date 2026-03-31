@@ -1,5 +1,4 @@
 const sections = document.querySelectorAll('.reveal');
-const progress = document.querySelector('.progress');
 const heroContent = document.querySelector('.hero .content');
 
 const observer = new IntersectionObserver((entries) => {
@@ -56,4 +55,12 @@ const methodObserver = new IntersectionObserver((entries)=>{
 }, {threshold:0.4});
 if (methodSection) methodObserver.observe(methodSection);
 
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const percent = (scrollTop / docHeight) * 100;
+  progress.style.width = percent + '%';
+
+  heroContent.style.transform = `translateY(${scrollTop * 0.18}px)`;
+  heroContent.style.opacity = `${1 - scrollTop / 600}`;
 });
