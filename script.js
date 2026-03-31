@@ -1,59 +1,69 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const progress = document.querySelector('.progress');
+  const heroContent = document.querySelector('.hero .content');
+
+  // Scroll progress bar & hero parallax
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    if (progress) progress.style.width = (scrollTop / docHeight) * 100 + '%';
+    if (heroContent) {
+      heroContent.style.transform = `translateY(${scrollTop * 0.18}px)`;
+      heroContent.style.opacity = `${1 - scrollTop / 600}`;
+    }
+  });
+
   // Reveal animation
   const sections = document.querySelectorAll('.reveal');
   const revealObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if(entry.isIntersecting) {
         entry.target.classList.add('visible');
-        obs.unobserve(entry.target); // only trigger once
+        obs.unobserve(entry.target); // only reveal once
       }
     });
-  }, {
-    root:null,
-    rootMargin:'0px 0px -100px 0px', // trigger a bit earlier
-    threshold:0.1
-  });
+  }, {root:null, rootMargin:'0px 0px -100px 0px', threshold:0.1});
   sections.forEach(sec => revealObserver.observe(sec));
 
-  // Methods typing animation
+  // Typing animation for Methods
   const methodText = document.querySelector('#method-typing');
   const firstPrompt = 'Generate a structured methodology section using AI-assisted research synthesis...';
   const secondPrompt = 'Rewriting: Mixed-method analysis using iterative prompt refinement and human validation.';
   let hasPlayed = false;
 
-  function typeText(text, speed = 35, callback) {
+  function typeText(text, speed = 35, callback){
     let i = 0;
-    function typing() {
-      methodText.textContent = text.slice(0, i++);
-      if(i <= text.length) setTimeout(typing, speed);
-      else if(callback) setTimeout(callback, 500, callback);
+    function typing(){
+      methodText.textContent = text.slice(0,i++);
+      if(i <= text.length) setTimeout(typing,speed);
+      else if(callback) setTimeout(callback,500);
     }
     typing();
   }
 
-  function deleteText(callback, speed = 18) {
+  function deleteText(callback,speed=18){
     let i = methodText.textContent.length;
-    function deleting() {
-      methodText.textContent = methodText.textContent.slice(0, i--);
-      if(i >= 0) setTimeout(deleting, speed);
-      else if(callback) setTimeout(callback, 300);
+    function deleting(){
+      methodText.textContent = methodText.textContent.slice(0,i--);
+      if(i>=0) setTimeout(deleting,speed);
+      else if(callback) setTimeout(callback,300);
     }
     deleting();
   }
 
-  function typeSequence() {
+  function typeSequence(){
     if(hasPlayed || !methodText) return;
     hasPlayed = true;
-    typeText(firstPrompt, 35, () => {
-      deleteText(() => {
-        typeText(secondPrompt, 28);
+    typeText(firstPrompt,35,()=>{
+      deleteText(()=>{
+        typeText(secondPrompt,28);
       });
     });
   }
 
-  // Trigger typing when method section is revealed
+  // Trigger typing when Methods section is revealed
   const methodSection = document.querySelector('#method');
-  if(methodSection) {
+  if(methodSection){
     const methodObserver = new IntersectionObserver((entries, obs)=>{
       entries.forEach(entry=>{
         if(entry.isIntersecting){
