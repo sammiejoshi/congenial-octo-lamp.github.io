@@ -1,4 +1,4 @@
-// Reveal sections on scroll
+// Scroll reveal for all sections (repeatable)
 const sections = document.querySelectorAll('.section');
 
 const observer = new IntersectionObserver(
@@ -6,9 +6,13 @@ const observer = new IntersectionObserver(
     entries.forEach(entry => {
       if(entry.isIntersecting){
         entry.target.classList.add('visible');
-        if(entry.target.id === 'method'){
-          startAIPromptAnimation();
-        }
+      } else {
+        entry.target.classList.remove('visible'); // repeat effect on scroll back
+      }
+
+      // Trigger AI animation only when Method section enters viewport
+      if(entry.target.id === 'method' && entry.isIntersecting){
+        startAIPromptAnimation();
       }
     });
   },
@@ -17,53 +21,49 @@ const observer = new IntersectionObserver(
 
 sections.forEach(section => observer.observe(section));
 
-
-// AI Prompt animation: Instant paste then rewrite as human prompt
+// AI Prompt Animation: Instant paste → delete → human-style prompt typing
 const aiPromptEl = document.getElementById('ai-prompt');
 
-const prompts = [
+const aiTexts = [
   "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
   "AI-generated text: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."
 ];
 
-const humanPrompt = "Rewrite this prompt in human style for clarity and purpose.";
+const humanPrompt = "Rewrite this AI output in a clear, human-friendly way.";
 
-let currentIndex = 0;
+let aiIndex = 0;
+let typingInProgress = false;
 
-function pasteAndRewrite() {
-  if(aiPromptEl.dataset.started) return;
-  aiPromptEl.dataset.started = true;
+function startAIPromptAnimation() {
+  if(typingInProgress) return; // Prevent multiple triggers
+  typingInProgress = true;
 
   function showNext() {
     // Instant paste AI text
-    aiPromptEl.textContent = prompts[currentIndex];
+    aiPromptEl.textContent = aiTexts[aiIndex];
 
     setTimeout(() => {
-      // Delete instantly
+      // Instant delete
       aiPromptEl.textContent = "";
 
-      // Type out human prompt
+      // Type human-style prompt letter by letter
       let i = 0;
       function typeHuman() {
         if(i < humanPrompt.length) {
           aiPromptEl.textContent += humanPrompt.charAt(i);
           i++;
-          setTimeout(typeHuman, 50);
+          setTimeout(typeHuman, 40);
         } else {
-          // Loop to next AI text after a delay
+          // After a pause, show next AI text
           setTimeout(() => {
-            currentIndex = (currentIndex + 1) % prompts.length;
+            aiIndex = (aiIndex + 1) % aiTexts.length;
             showNext();
           }, 2000);
         }
       }
       typeHuman();
-    }, 1000); // Keep AI text visible briefly
+    }, 1000); // Show AI text for 1 second
   }
 
   showNext();
-}
-
-function startAIPromptAnimation() {
-  pasteAndRewrite();
 }
