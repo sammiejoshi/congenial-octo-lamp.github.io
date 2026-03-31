@@ -1,4 +1,4 @@
-// Smooth scroll reveal for sections
+// Reveal sections on scroll
 const sections = document.querySelectorAll('.section');
 
 const observer = new IntersectionObserver(
@@ -18,53 +18,52 @@ const observer = new IntersectionObserver(
 sections.forEach(section => observer.observe(section));
 
 
-// AI Prompt typing animation for Method section
+// AI Prompt animation: Instant paste then rewrite as human prompt
 const aiPromptEl = document.getElementById('ai-prompt');
+
 const prompts = [
-  "Generating AI prompt...",
-  "Processing data...",
-  "Analyzing results...",
-  "Finalizing output..."
+  "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+  "AI-generated text: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."
 ];
 
-let currentPromptIndex = 0;
+const humanPrompt = "Rewrite this prompt in human style for clarity and purpose.";
 
-function typeWriter(text, i = 0, callback) {
-  if (i < text.length) {
-    aiPromptEl.textContent += text.charAt(i);
-    setTimeout(() => typeWriter(text, i + 1, callback), 50);
-  } else {
-    setTimeout(callback, 500);
-  }
-}
+let currentIndex = 0;
 
-function deleteWriter(callback) {
-  const text = aiPromptEl.textContent;
-  let i = text.length;
-  function deleteChar() {
-    if (i > 0) {
-      aiPromptEl.textContent = text.substring(0, i - 1);
-      i--;
-      setTimeout(deleteChar, 30);
-    } else {
-      callback();
-    }
+function pasteAndRewrite() {
+  if(aiPromptEl.dataset.started) return;
+  aiPromptEl.dataset.started = true;
+
+  function showNext() {
+    // Instant paste AI text
+    aiPromptEl.textContent = prompts[currentIndex];
+
+    setTimeout(() => {
+      // Delete instantly
+      aiPromptEl.textContent = "";
+
+      // Type out human prompt
+      let i = 0;
+      function typeHuman() {
+        if(i < humanPrompt.length) {
+          aiPromptEl.textContent += humanPrompt.charAt(i);
+          i++;
+          setTimeout(typeHuman, 50);
+        } else {
+          // Loop to next AI text after a delay
+          setTimeout(() => {
+            currentIndex = (currentIndex + 1) % prompts.length;
+            showNext();
+          }, 2000);
+        }
+      }
+      typeHuman();
+    }, 1000); // Keep AI text visible briefly
   }
-  deleteChar();
+
+  showNext();
 }
 
 function startAIPromptAnimation() {
-  if(aiPromptEl.dataset.started) return; // prevent re-trigger
-  aiPromptEl.dataset.started = true;
-
-  function nextPrompt() {
-    typeWriter(prompts[currentPromptIndex], 0, () => {
-      deleteWriter(() => {
-        currentPromptIndex = (currentPromptIndex + 1) % prompts.length;
-        nextPrompt();
-      });
-    });
-  }
-
-  nextPrompt();
+  pasteAndRewrite();
 }
