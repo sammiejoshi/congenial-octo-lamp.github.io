@@ -1,35 +1,25 @@
-/* Reset & basic styles */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{font-family:Inter,Arial,sans-serif;background:#090909;color:#f5f5f5;overflow-x:hidden;}
+body{font-family:Arial,sans-serif;background:#090909;color:#f5f5f5;overflow-x:hidden;}
 
-/* Progress bar */
 .progress-bar{position:fixed;top:0;left:0;width:100%;height:4px;background:rgba(255,255,255,.08);z-index:200;}
 .progress{height:100%;width:0;background:#fff;transition:width .1s linear;}
 
-/* Side navigation */
 .side-nav{position:fixed;right:30px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;z-index:100;}
 .side-nav a{color:#aaa;text-decoration:none;font-size:.9rem;transition:.3s;}
 .side-nav a:hover{color:#fff;transform:scale(1.1);}
 
-/* Panel sections */
 .panel{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 10vw;position:relative;}
 .content{max-width:900px;text-align:center;}
-
-/* Hero & end screen */
 .hero{background:linear-gradient(180deg,#000,#151515);}
 .end-screen{background:#f5f5f5;color:#111;}
-
-/* Typography */
-h1{font-size:clamp(4rem,9vw,7rem);letter-spacing:-.03em;}
-h2{font-size:clamp(2.5rem,6vw,5rem);margin-bottom:1rem;}
+h1{font-size:clamp(3rem,9vw,6rem);}
+h2{font-size:clamp(2rem,6vw,4rem);margin-bottom:1rem;}
 p{font-size:1.15rem;line-height:1.8;opacity:.9;}
 
-/* Reveal animation */
 .reveal{opacity:0;transform:translateY(60px);transition:all 1s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
-/* Typing effect */
-.typing-text{font-family:monospace;font-size:1.1rem;line-height:1.8;min-height:120px;
-  white-space:pre-wrap;border-right:2px solid rgba(255,255,255,.8);padding-right:4px;animation:blink 0.8s step-end infinite;}
+.typing-text{font-family:monospace;font-size:1.1rem;line-height:1.8;min-height:50px;
+white-space:pre-wrap;border-right:2px solid rgba(255,255,255,.8);padding-right:4px;animation:blink 0.8s step-end infinite;}
 @keyframes blink{50%{border-color:transparent;}}
