@@ -3,71 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cinematic Research Presentation</title>
-<link rel="stylesheet" href="styles.css">
+<title>Working Cinematic Demo</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;background:#090909;color:#f5f5f5;}
+  .panel{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:50px;}
+  .hero{background:linear-gradient(180deg,#000,#151515);}
+  h1{font-size:3rem;margin-bottom:1rem;}
+  h2{font-size:2rem;margin-bottom:1rem;}
+  p{font-size:1.2rem;}
+  .reveal{opacity:0;transform:translateY(60px);transition:all 1s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .typing-text{font-family:monospace;font-size:1.2rem;border-right:2px solid #fff;white-space:pre-wrap;min-height:50px;}
+</style>
 </head>
 <body>
 
-<!-- Scroll progress bar -->
-<div class="progress-bar"><div class="progress"></div></div>
-
-<!-- Side navigation -->
-<nav class="side-nav">
-  <a href="#front">01</a>
-  <a href="#intro">02</a>
-  <a href="#method">03</a>
-  <a href="#results">04</a>
-  <a href="#conclusion">05</a>
-  <a href="#end">06</a>
-</nav>
-
-<!-- Hero section -->
-<section id="front" class="panel hero">
-  <div class="content">
-    <h1>Research Presentation</h1>
-    <p>Scroll to explore the full study</p>
+<section class="panel hero reveal">
+  <div>
+    <h1>Hero Section</h1>
+    <p>Scroll down to see animations and typing</p>
   </div>
 </section>
 
-<!-- Introduction -->
-<section id="intro" class="panel reveal">
-  <div class="content">
+<section class="panel reveal">
+  <div>
     <h2>Introduction</h2>
-    <p>Introduce the research context, problem statement, and goals with clean narrative storytelling.</p>
+    <p>This section should fade in as you scroll.</p>
   </div>
 </section>
 
-<!-- Methodology -->
-<section id="method" class="panel reveal">
-  <div class="content">
+<section class="panel reveal" id="method">
+  <div>
     <h2>Method</h2>
     <p id="method-typing" class="typing-text"></p>
   </div>
 </section>
 
-<!-- Results -->
-<section id="results" class="panel reveal">
-  <div class="content">
-    <h2>Results</h2>
-    <p>Highlight major findings with strong visual emphasis and dramatic section transitions.</p>
-  </div>
-</section>
-
-<!-- Conclusion -->
-<section id="conclusion" class="panel reveal">
-  <div class="content">
+<section class="panel reveal">
+  <div>
     <h2>Conclusion</h2>
-    <p>Summarize the significance and implications of the results.</p>
+    <p>This section also fades in.</p>
   </div>
 </section>
 
-<!-- End screen -->
-<section id="end" class="panel end-screen reveal">
-  <div class="content">
-    <h1>Thank You</h1>
-  </div>
-</section>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- Reveal Animation ---
+  const sections = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.1});
+  sections.forEach(sec => revealObserver.observe(sec));
 
-<script src="script.js"></script>
+  // --- Typing Animation ---
+  const methodText = document.getElementById('method-typing');
+  const firstPrompt = 'Typing first line...';
+  const secondPrompt = 'Typing second line after deletion.';
+  let hasPlayed = false;
+
+  function typeText(text, speed=50, callback){
+    let i=0;
+    function typing(){
+      methodText.textContent = text.slice(0,i++);
+      if(i <= text.length) setTimeout(typing,speed);
+      else if(callback) setTimeout(callback,500);
+    }
+    typing();
+  }
+
+  function deleteText(callback, speed=30){
+    let i = methodText.textContent.length;
+    function deleting(){
+      methodText.textContent = methodText.textContent.slice(0,i--);
+      if(i >= 0) setTimeout(deleting,speed);
+      else if(callback) setTimeout(callback,300);
+    }
+    deleting();
+  }
+
+  function typeSequence(){
+    if(hasPlayed) return;
+    hasPlayed = true;
+    typeText(firstPrompt,50,()=>{
+      deleteText(()=>{typeText(secondPrompt,50);});
+    });
+  }
+
+  const methodSection = document.getElementById('method');
+  const methodObserver = new IntersectionObserver((entries, obs)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        typeSequence();
+        obs.disconnect();
+      }
+    });
+  }, {threshold:0.1});
+  methodObserver.observe(methodSection);
+});
+</script>
+
 </body>
 </html>
