@@ -1,13 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const progress = document.querySelector('.progress');
+  const heroContent = document.querySelector('.hero .content');
+
+  // Scroll progress bar & hero parallax
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const percent = (scrollTop / docHeight) * 100;
+    if (progress) progress.style.width = percent + '%';
+
+    if (heroContent) {
+      heroContent.style.transform = `translateY(${scrollTop * 0.18}px)`;
+      heroContent.style.opacity = `${1 - scrollTop / 600}`;
+    }
+  });
+
+  // Fade-in sections
+  const sections = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.25 });
+  sections.forEach(sec => observer.observe(sec));
+
+  // Typing animation for Methods section
   const methodText = document.querySelector('#method-typing');
   const firstPrompt = 'Generate a structured methodology section using AI-assisted research synthesis...';
   const secondPrompt = 'Rewriting: Mixed-method analysis using iterative prompt refinement and human validation.';
   let hasPlayed = false;
-
-  if (!methodText) {
-    console.error('Method typing element not found!');
-    return;
-  }
 
   function typeText(text, speed = 35, callback) {
     let i = 0;
@@ -31,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function typeSequence() {
-    if (hasPlayed) return;
+    if (hasPlayed || !methodText) return;
     hasPlayed = true;
     typeText(firstPrompt, 35, () => {
       deleteText(() => {
@@ -40,17 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Make typing happen when #method enters viewport
+  // Trigger typing when #method is in viewport
   const methodSection = document.querySelector('#method');
   if (methodSection) {
-    const observer = new IntersectionObserver((entries, obs) => {
+    const methodObserver = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           typeSequence();
-          obs.disconnect(); // run only once
+          obs.disconnect(); // Only trigger once
         }
       });
-    }, { threshold: 0.1 }); // smaller threshold to trigger earlier
-    observer.observe(methodSection);
+    }, { threshold: 0.1 });
+    methodObserver.observe(methodSection);
   }
 });
