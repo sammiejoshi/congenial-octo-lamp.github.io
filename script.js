@@ -10,7 +10,7 @@ const observer = new IntersectionObserver(
         entry.target.classList.remove('visible'); // repeat effect on scroll back
       }
 
-      // Trigger AI animation only when Method section enters viewport
+      // Trigger AI animation only once for Method section
       if(entry.target.id === 'method' && entry.isIntersecting){
         startAIPromptAnimation();
       }
@@ -19,50 +19,54 @@ const observer = new IntersectionObserver(
   { threshold: 0.3 }
 );
 
+// Observe each section
 sections.forEach(section => observer.observe(section));
 
-// AI Prompt Animation: Instant paste → delete → human-style prompt typing
+// AI Prompt Animation: Start blank → instant AI paste → delete char → human prompt
 const aiPromptEl = document.getElementById('ai-prompt');
-
 const aiTexts = [
   "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
   "AI-generated text: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..."
 ];
-
 const humanPrompt = "Rewrite this AI output in a clear, human-friendly way.";
 
 let aiIndex = 0;
-let typingInProgress = false;
+let animationPlayed = false;
 
 function startAIPromptAnimation() {
-  if(typingInProgress) return; // Prevent multiple triggers
-  typingInProgress = true;
+  if(animationPlayed) return;
+  animationPlayed = true;
+
+  aiPromptEl.textContent = ""; // start completely blank
 
   function showNext() {
     // Instant paste AI text
     aiPromptEl.textContent = aiTexts[aiIndex];
 
     setTimeout(() => {
-      // Instant delete
-      aiPromptEl.textContent = "";
-
-      // Type human-style prompt letter by letter
-      let i = 0;
-      function typeHuman() {
-        if(i < humanPrompt.length) {
-          aiPromptEl.textContent += humanPrompt.charAt(i);
-          i++;
-          setTimeout(typeHuman, 40);
+      // Delete character by character
+      let text = aiPromptEl.textContent;
+      let i = text.length;
+      function deleteChar() {
+        if(i > 0){
+          aiPromptEl.textContent = text.substring(0, i - 1);
+          i--;
+          setTimeout(deleteChar, 20); // quick deletion
         } else {
-          // After a pause, show next AI text
-          setTimeout(() => {
-            aiIndex = (aiIndex + 1) % aiTexts.length;
-            showNext();
-          }, 2000);
+          // Type human-style prompt
+          let j = 0;
+          function typeHuman() {
+            if(j < humanPrompt.length){
+              aiPromptEl.textContent += humanPrompt.charAt(j);
+              j++;
+              setTimeout(typeHuman, 40);
+            }
+          }
+          typeHuman();
         }
       }
-      typeHuman();
-    }, 1000); // Show AI text for 1 second
+      deleteChar();
+    }, 1000); // keep AI text visible 1s
   }
 
   showNext();

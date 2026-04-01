@@ -40,6 +40,8 @@ header h1 {
   opacity: 0;
   transform: translateY(50px);
   transition: all 1s ease;
+  position: relative;
+  border-bottom: 3px solid #333; /* clearly defined dividers */
 }
 
 .section.visible {
