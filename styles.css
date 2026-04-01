@@ -1,21 +1,37 @@
 /* Reset */
-* {
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #eee;
+  background-color: #111;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  scroll-behavior: smooth;
-  background-color: #111;
-  color: #eee;
+/* Progress bar */
+#progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: #222;
+  z-index: 1001;
+}
+
+#progress-bar {
+  height: 5px;
+  width: 0;
+  background: linear-gradient(90deg, #0f0, #0ff);
+  transition: width 0.1s linear;
 }
 
 /* Header */
 header {
   position: fixed;
-  top: 0;
+  top: 5px; 
   width: 100%;
   padding: 1rem 2rem;
   background: rgba(20,20,20,0.95);
@@ -25,23 +41,63 @@ header {
 }
 
 header h1 {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 2rem;
   color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Right-side section markers */
+#section-markers {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.marker {
+  width: 12px;
+  height: 12px;
+  background: #555;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.marker.active {
+  background: #0f0;
+  transform: scale(1.5);
+}
+
+.marker:hover {
+  box-shadow: 0 0 6px #0f0;
 }
 
 /* Sections */
+.section:nth-child(odd) {
+  background: linear-gradient(180deg, #111 0%, #1a1a1a 100%);
+}
+
+.section:nth-child(even) {
+  background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+}
+
 .section {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  padding: 0 10%;
+  padding: 6rem 10%;
   opacity: 0;
   transform: translateY(50px);
-  transition: all 1s ease;
+  transition: opacity 1s ease, transform 1s ease;
   position: relative;
-  border-bottom: 3px solid #333; /* clearly defined dividers */
+  border-bottom: 3px solid #333;
 }
 
 .section.visible {
@@ -53,23 +109,26 @@ header h1 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: #fff;
+  font-family: 'Inter', sans-serif;
+  transition: transform 0.5s ease-out;
 }
 
 .section p {
   font-size: 1.2rem;
-  line-height: 1.6;
-  text-align: center;
   color: #ccc;
+  margin-bottom: 1.5rem;
+  max-width: 800px;
+  text-align: center;
 }
 
-/* AI Prompt Animation */
+/* AI Prompt Animation (no glow) */
 .ai-prompt {
-  font-family: monospace;
+  font-family: 'Courier New', monospace;
   font-size: 1.1rem;
   background-color: #1e1e1e;
   padding: 1rem;
   margin-top: 1rem;
-  border-radius: 10px;
+  border-radius: 8px;
   min-height: 60px;
   width: 80%;
   max-width: 600px;
