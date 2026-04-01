@@ -1,4 +1,3 @@
-// Scroll reveal & section markers
 const sections = document.querySelectorAll('.section');
 const markers = document.querySelectorAll('.marker');
 const progressBar = document.getElementById('progress-bar');
@@ -11,14 +10,12 @@ const observer = new IntersectionObserver(entries => {
       entry.target.classList.remove('visible');
     }
 
-    // Update markers
     markers.forEach(marker => marker.classList.remove('active'));
     const index = Array.from(sections).indexOf(entry.target);
     if (entry.isIntersecting && markers[index]) {
       markers[index].classList.add('active');
     }
 
-    // Trigger AI animation once for Method section
     if (entry.target.id === 'method' && entry.isIntersecting) {
       startAIPromptAnimation();
     }
@@ -27,14 +24,12 @@ const observer = new IntersectionObserver(entries => {
 
 sections.forEach(section => observer.observe(section));
 
-// Progress bar & header parallax
 window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY;
   const docHeight = document.body.scrollHeight - window.innerHeight;
   const scrollPercent = (scrollTop / docHeight) * 100;
   progressBar.style.width = scrollPercent + "%";
 
-  // Parallax headers
   sections.forEach(section => {
     const rect = section.getBoundingClientRect();
     const header = section.querySelector('h2');
@@ -45,7 +40,6 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// AI Prompt Animation
 const aiPromptEl = document.getElementById('ai-prompt');
 const aiText = "Placeholder text reminiscient of AI generated text."
 const humanPrompt = "Placeholder text for something written by a human being.";
@@ -75,7 +69,6 @@ function startAIPromptAnimation() {
               j++;
               setTimeout(typeHuman, 40);
             } else {
-              // Typing finished → remove cursor
               aiPromptEl.classList.remove('typing');
             }
           }
@@ -87,7 +80,6 @@ function startAIPromptAnimation() {
   }, 700);
 }
 
-// Click marker to scroll
 markers.forEach(marker => {
   marker.addEventListener('click', () => {
     const targetId = marker.dataset.target;
