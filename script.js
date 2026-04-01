@@ -47,7 +47,7 @@ window.addEventListener('scroll', () => {
 
 // AI Prompt Animation
 const aiPromptEl = document.getElementById('ai-prompt');
-const aiTexts = "Placeholder text reminiscient of AI generated text."
+const aiText = "Placeholder text reminiscient of AI generated text."
 const humanPrompt = "Placeholder text for something written by a human being.";
 
 function startAIPromptAnimation() {
@@ -56,7 +56,7 @@ function startAIPromptAnimation() {
   aiPromptEl.classList.add('typing');
 
   setTimeout(() => {
-    aiPromptEl.textContent = aiTexts[0];
+    aiPromptEl.textContent = aiText;
 
     setTimeout(() => {
       let text = aiPromptEl.textContent;
