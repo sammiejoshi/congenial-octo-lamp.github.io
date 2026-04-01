@@ -1,4 +1,4 @@
-// Scroll reveal and section markers
+// Scroll reveal & section markers
 const sections = document.querySelectorAll('.section');
 const markers = document.querySelectorAll('.marker');
 const progressBar = document.getElementById('progress-bar');
@@ -27,49 +27,62 @@ const observer = new IntersectionObserver(entries => {
 
 sections.forEach(section => observer.observe(section));
 
-// Progress bar update
+// Progress bar & header parallax
 window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY;
   const docHeight = document.body.scrollHeight - window.innerHeight;
   const scrollPercent = (scrollTop / docHeight) * 100;
   progressBar.style.width = scrollPercent + "%";
+
+  // Parallax headers
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    const header = section.querySelector('h2');
+    if(header){
+      const offset = rect.top * 0.05;
+      header.style.transform = `translateY(${offset}px)`;
+    }
+  });
 });
 
 // AI Prompt Animation
 const aiPromptEl = document.getElementById('ai-prompt');
 const aiTexts = [
-  "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
+  "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
 ];
 const humanPrompt = "Rewrite this AI output in a clear, human-friendly way.";
 
 let animationPlayed = false;
 
 function startAIPromptAnimation() {
-  if (animationPlayed) return;
+  if(animationPlayed) return;
   animationPlayed = true;
 
-  aiPromptEl.textContent = ""; // start blank
+  aiPromptEl.textContent = "";
+  aiPromptEl.classList.add('typing');
 
-  // Paste AI text instantly
+  // Instant AI text paste
   aiPromptEl.textContent = aiTexts[0];
 
   setTimeout(() => {
-    // Delete character by character
     let text = aiPromptEl.textContent;
     let i = text.length;
+
     function deleteChar() {
       if (i > 0) {
         aiPromptEl.textContent = text.substring(0, i - 1);
         i--;
         setTimeout(deleteChar, 20);
       } else {
-        // Type human prompt
         let j = 0;
         function typeHuman() {
           if (j < humanPrompt.length) {
             aiPromptEl.textContent += humanPrompt.charAt(j);
             j++;
             setTimeout(typeHuman, 40);
+          } else {
+            // Typing finished → remove cursor
+            aiPromptEl.classList.remove('typing');
           }
         }
         typeHuman();
@@ -79,7 +92,7 @@ function startAIPromptAnimation() {
   }, 1000);
 }
 
-// Marker click scroll
+// Click marker to scroll
 markers.forEach(marker => {
   marker.addEventListener('click', () => {
     const targetId = marker.dataset.target;
