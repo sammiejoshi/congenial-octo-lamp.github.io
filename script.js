@@ -47,49 +47,44 @@ window.addEventListener('scroll', () => {
 
 // AI Prompt Animation
 const aiPromptEl = document.getElementById('ai-prompt');
-const aiTexts = [
-  "AI-generated text: Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-];
-const humanPrompt = "Rewrite this AI output in a clear, human-friendly way.";
-
-let animationPlayed = false;
+const aiTexts = "Placeholder text reminiscient of AI generated text."
+const humanPrompt = "Placeholder text for something written by a human being.";
 
 function startAIPromptAnimation() {
-  if(animationPlayed) return;
-  animationPlayed = true;
 
   aiPromptEl.textContent = "";
   aiPromptEl.classList.add('typing');
 
-  // Instant AI text paste
-  aiPromptEl.textContent = aiTexts[0];
-
   setTimeout(() => {
-    let text = aiPromptEl.textContent;
-    let i = text.length;
+    aiPromptEl.textContent = aiTexts[0];
 
-    function deleteChar() {
-      if (i > 0) {
-        aiPromptEl.textContent = text.substring(0, i - 1);
-        i--;
-        setTimeout(deleteChar, 20);
-      } else {
-        let j = 0;
-        function typeHuman() {
-          if (j < humanPrompt.length) {
-            aiPromptEl.textContent += humanPrompt.charAt(j);
-            j++;
-            setTimeout(typeHuman, 40);
-          } else {
-            // Typing finished → remove cursor
-            aiPromptEl.classList.remove('typing');
+    setTimeout(() => {
+      let text = aiPromptEl.textContent;
+      let i = text.length;
+
+      function deleteChar() {
+        if (i > 0) {
+          aiPromptEl.textContent = text.substring(0, i - 1);
+          i--;
+          setTimeout(deleteChar, 20);
+        } else {
+          let j = 0;
+          function typeHuman() {
+            if (j < humanPrompt.length) {
+              aiPromptEl.textContent += humanPrompt.charAt(j);
+              j++;
+              setTimeout(typeHuman, 40);
+            } else {
+              // Typing finished → remove cursor
+              aiPromptEl.classList.remove('typing');
+            }
           }
+          typeHuman();
         }
-        typeHuman();
       }
-    }
-    deleteChar();
-  }, 1000);
+      deleteChar();
+    }, 1000);
+  }, 700);
 }
 
 // Click marker to scroll
